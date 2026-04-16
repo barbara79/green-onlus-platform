@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # The Traffic Controller (Front Door)
+  proxy:
+    image: nginx:alpine
+    container_name: gop_proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+      - api
+    networks:
+      - green-net
+
+  # PHP API
+  api:
+    build: ./backend
+    container_name: gop_api
+    environment:
+      DB_HOST: db
+      DB_NAME: onlus_merch
+      DB_USER: green_admin
+      DB_PASS: safe_password_123
+    networks:
+      - green-net
+
+  # React + TS (Vite)
+  web:
+    build: ./frontend
+    container_name: gop_web
+    # IMPORTANT: We removed the ports: - "5173:5173" section!
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - VITE_PORT=5173
+    networks:
+      - green-net
+
+  # Database
+  db:
+    image: postgres:15-alpine
+    container_name: gop_db
+    environment:
+      POSTGRES_USER: green_admin
+      POSTGRES_PASSWORD: safe_password_123
+      POSTGRES_DB: onlus_merch
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - green-net
+
+networks:
+  green-net:
+    driver: bridge
+
+volumes:
+  pgdata:
