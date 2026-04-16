@@ -20,5 +20,5 @@ A sustainable, full-stack merchandising platform designed for social impact. Bui
 ### Installation & Setup
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/YOUR_USERNAME/green-onlus-platform.git](https://github.com/YOUR_USERNAME/green-onlus-platform.git)
+   git clone [https://github.com/barbara79/green-onlus-platform.git](https://github.com/barbara79/green-onlus-platform.git)
    cd green-onlus-platform
