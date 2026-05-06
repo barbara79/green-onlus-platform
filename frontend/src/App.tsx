@@ -1,69 +1,47 @@
-import { useEffect, useState } from 'react'
-
-interface Gadget {
-  id: number;
-  name: string;
-  type: 'physical' | 'digital_badge';
-  impact_description: string;
-  co2_saved_grams: number;
-}
+import { useState, useEffect } from 'react';
+import { HealthBadge } from './components/HealthBadge';
+import { ImpactCard } from './components/ImpactCard';
+import { type Gadget, type CarbonMetadata, type SystemHealth } from './types';
 
 function App() {
   const [items, setItems] = useState<Gadget[]>([]);
+  const [impact, setImpact] = useState<CarbonMetadata | null>(null);
+  const [health, setHealth] = useState<SystemHealth | null>(null);
 
   useEffect(() => {
-    // This fetches from our PHP API through the Nginx proxy
     fetch('/api/gadgets')
       .then(res => res.json())
-      .then(data => setItems(data))
-      .catch(err => console.error("API Error:", err));
+      .then(result => {
+        setItems(result.data || []);
+        setImpact(result.metadata);
+      });
+
+    fetch('/api/health')
+      .then(res => res.json())
+      .then(data => setHealth(data));
   }, []);
 
   return (
-    <div style={{ maxWidth: '800px', margin: 'auto', padding: '40px', fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ backgroundColor: '#f9fff9', minHeight: '100vh', padding: '40px', fontFamily: 'sans-serif' }}>
       <header style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1 style={{ color: '#2e7d32', fontSize: '2.5rem' }}>Green Onlus Platform</h1>
-        <p style={{ color: '#666' }}>Sustainable Merchandising for Social Impact</p>
+        <h1 style={{ color: '#2e7d32' }}>🌿 Green Onlus Impact Dashboard</h1>
+        
+        <HealthBadge data={health} />
+        
+        <p>Real-time sustainability metrics from our global community.</p>
+        
+        {impact && (
+          <div style={{ display: 'inline-block', marginTop: '10px', fontSize: '0.85rem', color: '#666', border: '1px dashed #2e7d32', padding: '5px 15px', borderRadius: '20px' }}>
+            This request cost <strong>{impact.estimated_co2_grams}g</strong> of CO2
+          </div>
+        )}
       </header>
 
-      <div style={{ display: 'grid', gap: '20px' }}>
-        {items.map(item => (
-          <div key={item.id} style={{
-            padding: '20px',
-            borderRadius: '16px',
-            border: '1px solid #e0e0e0',
-            background: item.type === 'digital_badge' ? '#f1f8e9' : '#fff',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <div>
-              <h3 style={{ margin: '0 0 8px 0', color: '#1b5e20' }}>{item.name}</h3>
-              <p style={{ margin: 0, color: '#444', fontSize: '0.95rem' }}>{item.impact_description}</p>
-            </div>
-            
-            <div style={{ textAlign: 'right' }}>
-              <span style={{ 
-                display: 'inline-block',
-                padding: '4px 12px',
-                borderRadius: '20px',
-                fontSize: '0.75rem',
-                fontWeight: 'bold',
-                background: item.type === 'digital_badge' ? '#4caf50' : '#81c784',
-                color: '#fff',
-                marginBottom: '8px'
-              }}>
-                {item.type.toUpperCase()}
-              </span>
-              {item.co2_saved_grams > 0 && (
-                <div style={{ color: '#2e7d32', fontWeight: 'bold' }}>🌱 -{item.co2_saved_grams}g CO2</div>
-              )}
-            </div>
-          </div>
-        ))}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+        {items.map(item => <ImpactCard key={item.id} item={item} />)}
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

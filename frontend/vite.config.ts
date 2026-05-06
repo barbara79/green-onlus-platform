@@ -8,9 +8,9 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     hmr: {
-      protocol: 'ws',    // Use WebSocket
-      host: 'localhost', // External host
-      port: 80,          // MUST be 80 to match Nginx
+      protocol: 'ws',
+      host: 'localhost',
+      port: 8080,  
     },
     watch: {
       usePolling: true,

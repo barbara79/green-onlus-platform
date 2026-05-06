@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 5173
 
 # Start the dev server with the --host flag to allow Nginx to connect
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

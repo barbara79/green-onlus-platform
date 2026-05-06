@@ -21,8 +21,19 @@ A sustainable, full-stack merchandising platform designed for social impact. Bui
 ### Installation & Setup
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/barbara79/green-onlus-platform.git](https://github.com/barbara79/green-onlus-platform.git)
+   git clone https://github.com/barbara79/green-onlus-platform.git
    cd green-onlus-platform
+   ```
+2. Start the ecosystem
+   ```bash
+   docker-compose up --build
+   ```
+3. Access the platform:
+Access the platform:
+
+Frontend: http://localhost:8080
+
+API Data: http://localhost:8080/api/gadgets
 
 ## 🌱 How to Help (Green Contributions)
 This is a WIP project. We welcome "Green" optimizations:
